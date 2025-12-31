@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -9,11 +8,9 @@ const { upload, handleUpload } = require('./controllers/uploadController');
 const { handleSearch } = require('./controllers/searchController');
 
 const app = express();
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
+// ✅ ONLY ONE PORT DECLARATION
+const PORT = process.env.PORT || 10000;
 
 // Ensure uploads directory exists for local storage
 const uploadDir = path.join(__dirname, 'uploads');
@@ -33,22 +30,17 @@ app.use('/uploads', express.static(uploadDir));
 app.post('/api/upload', upload.single('file'), handleUpload);
 app.get('/api/search', handleSearch);
 
-// Start server (MUST BE LAST)
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-// Global Error Handler
+// Global Error Handler (should be AFTER routes)
 app.use((err, req, res, next) => {
   console.error('SERVER ERROR:', err);
-  res.status(500).json({ 
-    error: 'Internal Server Error', 
-    details: err.message 
+  res.status(500).json({
+    error: 'Internal Server Error',
+    details: err.message
   });
 });
 
+// ✅ ONLY ONE app.listen (MUST BE LAST)
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[WorkLens] Backend Protocol Active on Port ${PORT}`);
+  console.log(`[WorkLens] Backend running on port ${PORT}`);
   console.log(`[WorkLens] Local Storage: ${uploadDir}`);
 });
