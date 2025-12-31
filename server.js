@@ -9,7 +9,11 @@ const { upload, handleUpload } = require('./controllers/uploadController');
 const { handleSearch } = require('./controllers/searchController');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 
 // Ensure uploads directory exists for local storage
 const uploadDir = path.join(__dirname, 'uploads');
@@ -27,16 +31,12 @@ app.use('/uploads', express.static(uploadDir));
  * @desc Handles multipart/form-data for Docs, Audio, and Video files.
  */
 app.post('/api/upload', upload.single('file'), handleUpload);
+app.get('/api/search', handleSearch);
 
-/**
- * @route POST /api/search
- * @desc Performs contextual deep search on a specific file using Gemini.
- */
-app.post('/api/search', handleSearch);
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'active', service: 'WorkLens-Intelligence-Engine' });
+// Start server (MUST BE LAST)
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 // Global Error Handler
